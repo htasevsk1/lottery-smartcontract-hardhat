@@ -8,10 +8,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
-    let vrfCoordinatorV2Address, subscriptionId
+    let vrfCoordinatorV2Address, subscriptionId, vrfCoordinatorV2Mock
 
     if (developmentChains.includes(network.name)) {
-        const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
+        vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
         vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address
         const transactionResponse = await vrfCoordinatorV2Mock.createSubscription()
         const transactionReceipt = await transactionResponse.wait()
@@ -47,6 +47,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifiying ...")
         await verify(raffle.address, args)
+    }
+
+    if (developmentChains.includes(network.name)) {
+        // NOTE - we must add this consumer so that we don't get an error like
+        // Error: VM Exception while processing transaction: reverted with custom error 'InvalidConsumer()'
+        await vrfCoordinatorV2Mock.addConsumer(subscriptionId, raffle.address)
+
+        log("Consumer is added")
     }
 }
 
