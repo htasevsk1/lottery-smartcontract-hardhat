@@ -21,6 +21,12 @@ module.exports = {
             accounts: [process.env.PRIVATE_KEY],
         },
     },
+    etherscan: {
+        // yarn hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
+        apiKey: {
+            goerli: process.env.ETHERSCAN_API_KEY,
+        },
+    },
     gasReporter: {
         enabled: false,
         currency: "USD",
@@ -38,6 +44,6 @@ module.exports = {
         },
     },
     mocha: {
-        timeout: 300000, // 200s
+        timeout: 300000, // 300s
     },
 }

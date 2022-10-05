@@ -41,7 +41,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         from: deployer,
         args: args,
         log: true,
-        waitConfirmatios: network.config.blockConfirmations || 1,
+        waitConfirmatios: network.config.blockConfirmations || 6,
     })
 
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
